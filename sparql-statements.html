@@ -1,0 +1,168 @@
+<!--
+	@license
+	Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+	This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+	The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+	The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+	Code distributed by Google as part of the polymer project is also
+	subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<!--
+	An element providing a solution to get data from a sparql endpoint like a fuseki server.</br>
+	Voir demo </br>
+	( http://fuseki-smag0.rhcloud.com/, <a href="http://smag0.blogspot.fr/p/blog-page_14.html">RDF Facile</a> )
+	
+	Usage:
+	
+			<sparql-statements
+				endpoint="{{endpoint}}"
+				query="{{query}}"
+				ds="{{ds}}" 
+				limite="{{limite}}">
+			</sparql-statements>
+	
+	Example:
+	
+			<sparql-statements
+				endpoint="http://fuseki-smag0.rhcloud.com"
+				query="SELECT * WHERE {?Sujet ?Predicat ?Objet}"
+				ds="ds" 
+				limite=10>
+			</sparql-statements>
+			
+	@demo demo/index.html
+	@hero hero.svg
+-->
+
+<dom-module id="sparql-statements">
+	<template>
+		<style>
+			:host {
+			display: block;
+			box-sizing: border-box;
+			}
+			table {
+			font-family: arial, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+			}
+			
+			td, th {
+			border: 1px solid #dddddd;
+			text-align: left;
+			padding: 8px;
+			width: 30%;
+			}
+			
+			tr:nth-child(even) {
+			background-color: #dddddd;
+			}
+			
+			
+		</style>
+		
+		<!--<iron-ajax
+			auto
+			url="{{url}}"
+			params={{options}}
+			handle-as="json"
+		last-response="{{response}}"></iron-ajax>-->
+		
+		
+		<iron-ajax
+		auto
+		url="{{url}}"
+		params="{{options}}"
+		handle-as="json"
+		on-response="handleResponse"
+		debounce-duration="300"></iron-ajax>
+		
+
+		<table>
+		<!-- voir aussi https://saulis.github.io/iron-data-table/demo/columns.html -->
+		<tr>
+			<template is="dom-repeat" items="{{head}}">
+				<th>{{item}}</th>
+			</template>	
+		</tr>
+		<template is="dom-repeat" items="{{results}}">
+			<tr>
+				<td>{{item.Sujet.value}}</td>
+				<td>{{item.Predicat.value}}</td>
+				<td>{{item.Objet.value}}</td>
+			</tr>
+		</template>	
+		</table>
+	</template>
+	
+	<script>
+		Polymer({
+			is: 'sparql-statements',
+			
+			properties: {
+				endpoint : {
+/*					 adresse url du server : </br>
+					- http://fuseki-smag0.rhcloud.com/, </br>
+					- http://fr.dbpedia.com/, (pb : pas de dataset )</br>
+					<a href="http://smag0.blogspot.fr/p/blog-page_14.html">RDF Facile</a>
+*/
+					value: 'http://rdf-smag0.rhcloud.com',
+					notify: true
+				},
+				ds : {
+					value: 'ds',
+					notify: true
+				},
+				action : {
+					value: 'query',
+					notify: true
+				},
+				query : {
+					value: 'SELECT * WHERE {?Sujet ?Predicat ?Objet}',
+					notify: true
+				},
+				limite : {
+					value: 10,
+					notify: true
+					},
+				output : {
+					value: 'json',
+					notify: true
+				},
+				url: {
+					computed: 'computedUrl(endpoint,ds,action)'
+				},
+				options: {
+					computed: 'computedOptions(query,limite,output)'
+				},
+				head: {
+					type: Array,
+					notify: true
+				},
+				results:{
+					type: Array,
+					notify: true
+				}
+			},
+			
+			
+			computedUrl: function(endpoint,ds,action){
+				return [endpoint,ds,action].join('/');
+			},
+			computedOptions: function(query,limite,output){
+			var queryLimite=query+" LIMIT "+limite;
+				return{query: queryLimite, output: output};
+			},
+			handleResponse:function(data){
+				console.log(data.detail.response);
+				this.head=data.detail.response.head.vars;
+				this.results=data.detail.response.results.bindings;
+				console.log(this.head);
+				console.log(this.results);
+			}
+		});
+	</script>
+</dom-module>
