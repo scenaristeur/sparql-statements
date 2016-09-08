@@ -17,22 +17,22 @@
 	
 	Usage:
 	
-			<sparql-statements
-				endpoint="{{endpoint}}"
-				query="{{query}}"
-				ds="{{ds}}" 
-				limite="{{limite}}">
-			</sparql-statements>
+	<sparql-statements
+	endpoint="{{endpoint}}"
+	query="{{query}}"
+	ds="{{ds}}" 
+	limite="{{limite}}">
+	</sparql-statements>
 	
 	Example:
 	
-			<sparql-statements
-				endpoint="http://fuseki-smag0.rhcloud.com"
-				query="SELECT * WHERE {?Sujet ?Predicat ?Objet}"
-				ds="ds" 
-				limite=10>
-			</sparql-statements>
-			
+	<sparql-statements
+	endpoint="http://fuseki-smag0.rhcloud.com"
+	query="SELECT * WHERE {?Sujet ?Predicat ?Objet}"
+	ds="ds" 
+	limite=10>
+	</sparql-statements>
+	
 	@demo demo/index.html
 	@hero hero.svg
 -->
@@ -80,21 +80,37 @@
 		on-response="handleResponse"
 		debounce-duration="300"></iron-ajax>
 		
-
+		<paper-dropdown-menu label="Endpoint"
+		style="width:40em">
+			<paper-listbox 
+			class="dropdown-content" 
+			selected="{{selectedEndpointId}}"
+			style="width:40em"
+			attr-for-selected="myid">
+				<template is="dom-repeat" items="[[endpoints]]" as="endpoint">
+					<paper-item myid="[[endpoint.id]]">[[endpoint.name]]</paper-item>
+				</template>
+			</paper-listbox>
+		</paper-dropdown-menu>
+		
+		
+		<span>Endpoint: [[selectedEndpointId]]</span>
+		
+		
 		<table>
-		<!-- voir aussi https://saulis.github.io/iron-data-table/demo/columns.html -->
-		<tr>
-			<template is="dom-repeat" items="{{head}}">
-				<th>{{item}}</th>
-			</template>	
-		</tr>
-		<template is="dom-repeat" items="{{results}}">
+			<!-- voir aussi https://saulis.github.io/iron-data-table/demo/columns.html -->
 			<tr>
-				<td>{{item.Sujet.value}}</td>
-				<td>{{item.Predicat.value}}</td>
-				<td>{{item.Objet.value}}</td>
+				<template is="dom-repeat" items="{{head}}">
+					<th>{{item}}</th>
+				</template>	
 			</tr>
-		</template>	
+			<template is="dom-repeat" items="{{results}}">
+				<tr>
+					<td>{{item.Sujet.value}}</td>
+					<td>{{item.Predicat.value}}</td>
+					<td>{{item.Objet.value}}</td>
+				</tr>
+			</template>	
 		</table>
 	</template>
 	
@@ -103,14 +119,23 @@
 			is: 'sparql-statements',
 			
 			properties: {
+				endpoints :{
+					type : Array,
+					value : [{"id": "rdf", "name": "http://rdf-smag0.rhcloud.com"}, {"id": "fuseki", "name": "http://fuseki-smag0.rhcloud.com"}, {"id": "PAS ENCORE IMPLEMENTE (gerer le no-dataset)", "name": "http://dbpedia.org"}, {"id": "PAS ENCORE IMPLEMENTE (gerer le no-dataset)", "name": "http://rdf.insee.fr"}]
+				} ,
 				endpoint : {
-/*					 adresse url du server : </br>
-					- http://fuseki-smag0.rhcloud.com/, </br>
-					- http://fr.dbpedia.com/, (pb : pas de dataset )</br>
-					<a href="http://smag0.blogspot.fr/p/blog-page_14.html">RDF Facile</a>
-*/
-					value: 'http://rdf-smag0.rhcloud.com',
-					notify: true
+					/*					 adresse url du server : </br>
+						- http://fuseki-smag0.rhcloud.com/, </br>
+						- http://fr.dbpedia.com/, (pb : pas de dataset )</br>
+						<a href="http://smag0.blogspot.fr/p/blog-page_14.html">RDF Facile</a>
+					*/
+					/* Utiliser value & notify avec paper-input pour avoir un endpoint unique, ou computed pour avoir une liste deroulante*/
+					//value: 'http://rdf-smag0.rhcloud.com',
+					//notify: true
+					computed: 'computeEndpoint(selectedEndpointId)'
+				},
+				selectedEndpointId : {
+					notify : true
 				},
 				ds : {
 					value: 'ds',
@@ -123,11 +148,15 @@
 				query : {
 					value: 'SELECT * WHERE {?Sujet ?Predicat ?Objet}',
 					notify: true
+					/*Exemple de requetes
+						
+					<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/NS/RobotBase#Robot>*/
+					/*<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/ns/smag0/robotique#Exposant>*/
 				},
 				limite : {
 					value: 10,
 					notify: true
-					},
+				},
 				output : {
 					value: 'json',
 					notify: true
@@ -148,12 +177,24 @@
 				}
 			},
 			
-			
+			computeEndpoint: function (id){
+				var endpoint="";
+				for(i=0;i<this.endpoints.length; i++){
+					var ep = this.endpoints[i];
+					if (ep.id==id){
+						endpoint=ep.name;
+					}
+				}
+				this.ds="ds" ; // et oui, pour l'instant, il n'y a qu'un dataset ds sur chacun des serveurs Fuseki "rdf" et "fuseki"
+				console.log(endpoint);
+				return endpoint;
+			},
 			computedUrl: function(endpoint,ds,action){
+				console.log(endpoint);
 				return [endpoint,ds,action].join('/');
 			},
 			computedOptions: function(query,limite,output){
-			var queryLimite=query+" LIMIT "+limite;
+				var queryLimite=query+" LIMIT "+limite;
 				return{query: queryLimite, output: output};
 			},
 			handleResponse:function(data){

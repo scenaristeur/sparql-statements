@@ -15,32 +15,48 @@
 		<title>sparql-statements Demo</title>
 		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 		<link rel="import" href="../../paper-input/paper-input.html">
+		<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+		<link rel="import" href="../../paper-listbox/paper-listbox.html">
+		<link rel="import" href="../../paper-item/paper-item.html">
 		<link rel="import" href="../sparql-statements.html">
 	</head>
 	<body unresolved>
 		
-		<p>An example of <code>&lt;sparql-statements&gt;</code>:</p>
-		<template is="dom-bind">
+		<p>An example of <code>&lt;sparql-statements&gt;</code>: Commencez par selectionner un endpoint pour voir les donnees</p>
+		<template is="dom-bind" >
+			<!--
+				<paper-input
+				type="text" 
+				style="width:20em"
+				label="Endpoint"
+			value="{{endpoint::change}}"></paper-input> -->
 			
-			<paper-input
-			type="text" 
-			style="width:20em"
-			label="Endpoint"
-			value="{{endpoint::change}}"></paper-input> 
+			
+			<!--
+			<paper-dropdown-menu label="Endpoint"
+			attr-for-selected="value"
+			selected="{{endpoint::change}}"
+			style="width:100em"
+			>
+				<paper-listbox class="dropdown-content">
+					<paper-item >http://rdf-smag0.rhcloud.com</paper-item>
+					<paper-item>http://fuseki-smag0.rhcloud.com</paper-item>
+				</paper-listbox>
+			</paper-dropdown-menu>-->
 			
 			<paper-input 
 			type="text"
 			style="width:100%" 
 			label="Query"
 			value="{{query::change}}"></paper-input>
-
+			
 			<paper-input 
 			type="text"
 			style="width:20em" 
 			label="Dataset"
 			value="{{ds::change}}"></paper-input>
 			
-						<paper-input 
+			<paper-input 
 			type="text"
 			style="width:20em" 
 			label="Limite"
