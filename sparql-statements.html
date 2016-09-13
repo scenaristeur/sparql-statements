@@ -80,12 +80,11 @@
 		on-response="handleResponse"
 		debounce-duration="300"></iron-ajax>
 		
-		<paper-dropdown-menu label="Endpoint"
-		style="width:40em">
+		<paper-dropdown-menu label="Endpoint">
 			<paper-listbox 
 			class="dropdown-content" 
 			selected="{{selectedEndpointId}}"
-			style="width:40em"
+			
 			attr-for-selected="myid">
 				<template is="dom-repeat" items="[[endpoints]]" as="endpoint">
 					<paper-item myid="[[endpoint.id]]">[[endpoint.name]]</paper-item>
@@ -148,9 +147,17 @@
 				query : {
 					value: 'SELECT * WHERE {?Sujet ?Predicat ?Objet}',
 					notify: true
-					/*Exemple de requetes
-						
-					<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/NS/RobotBase#Robot>*/
+
+					
+					//////////////////////////////////////////////////////////////////////
+					//
+					//            AUTRES REQUETES A AJOUTER
+					//
+					//SELECT * WHERE {?Sujet <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	?Objet}
+					//SELECT * WHERE {?Sujet <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/NS/RobotBase#Robot>}
+										/*Exemple de requetes
+											value: 'SELECT * WHERE {?Sujet <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/NS/RobotBase#Robot>}',
+					//<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/NS/RobotBase#Robot>*/
 					/*<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://smag0.blogspot.fr/ns/smag0/robotique#Exposant>*/
 				},
 				limite : {

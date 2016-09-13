@@ -1,0 +1,39 @@
+{
+  "name": "sparql-statements",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "sparql-statements.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "paper-input": "PolymerElements/paper-input#^1.1.18",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.4.0",
+    "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
+    "paper-item": "PolymerElements/paper-item#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "_release": "af8d62b047",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "af8d62b0473fdbe837f08709ebd0ec452eadb8ad"
+  },
+  "_source": "git://github.com/scenaristeur/sparql-statements.git",
+  "_target": "*",
+  "_originalSource": "scenaristeur/sparql-statements"
+}
